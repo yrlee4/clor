@@ -31,8 +31,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="serif"
                     android:text="색상 조합 선택 비율"
-                    android:textSize="24sp"
+                    android:textColor="@color/cardview_dark_background"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <com.github.mikephil.charting.charts.PieChart
@@ -67,8 +69,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="serif"
                     android:text="만족도"
-                    android:textSize="24sp"
+                    android:textColor="@color/cardview_dark_background"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <com.github.mikephil.charting.charts.BarChart

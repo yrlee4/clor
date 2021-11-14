@@ -1,7 +1,11 @@
 package org.techtown.diary;
 
+import android.app.AlertDialog;
+import android.os.Handler;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,12 +50,16 @@ public class Fragment2 extends AppCompatActivity {
     File file;
     Bitmap resultPhotoBitmap;
 
+    //추가
+    Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment2);
         pictureImageView = findViewById(R.id.pictureImageView);
+
+
 
         Button addButton1 = findViewById(R.id.addButton1);
         addButton1.setOnClickListener(new View.OnClickListener(){
@@ -73,10 +82,53 @@ public class Fragment2 extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //웹 서버로 연결
+                request();
+                //받아오고 나면,,
+                showMessage();
             }
 
         });
+    }
+
+    //서버로 연결
+    private void request() {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+            }
+            //서버 연결
+        }, 5000);
+    }
+
+    //서버 연결하는 메시지 보여주기
+    private void showMessage() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("안내");
+        builder.setMessage("조합을 확인할까요?");
+        builder.setIcon(android.R.drawable.ic_dialog_alert);
+        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //결과 보여주기
+                Intent intent = new Intent(getApplicationContext(), ShowResult.class);
+                startActivityForResult(intent, AppConstants.REQ_SHOW_COMBINATION);
+            }
+        });
+        /*
+        builder.setNeutralButton("취소", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+            }
+        });
+        */
+        builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //설정하기
+            }
+        });
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
     }
 
     public void showPhotoCaptureActivity() {
@@ -102,7 +154,6 @@ public class Fragment2 extends AppCompatActivity {
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 
         startActivityForResult(intent, AppConstants.REQ_PHOTO_CAPTURE);
-
     }
 
 

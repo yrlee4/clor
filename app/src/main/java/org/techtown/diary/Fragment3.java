@@ -1,5 +1,7 @@
 package org.techtown.diary;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,13 +31,17 @@ import com.github.mikephil.charting.utils.MPPointF;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class Fragment3 extends AppCompatActivity {
     PieChart chart;
     BarChart chart2;
+
+    Context context;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,8 +96,6 @@ public class Fragment3 extends AppCompatActivity {
         legend2.setEnabled(false);
 
         chart2.animateXY(1500, 1500);
-
-        setData2();
     }
 
 

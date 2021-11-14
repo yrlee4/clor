@@ -7,14 +7,18 @@ import java.text.SimpleDateFormat;
 
 public class AppConstants {
 
-    public static final int REQ_LOCATION_BY_ADDRESS = 101;
-    public static final int REQ_WEATHER_BY_GRID = 102;
+    public static final int REQ_SHOW_COMBINATION = 101;
+    public static final int REQ_SHOW_COLORS = 102;
 
     public static final int REQ_PHOTO_CAPTURE = 103;
     public static final int REQ_PHOTO_SELECTION = 104;
 
     public static final int CONTENT_PHOTO = 105;
     public static final int CONTENT_PHOTO_EX = 106;
+
+    public static final int FINAL_FIGURE = 200;
+    public static final int MAIN = 201;
+    public static final int STATICS = 202;
 
     public static String FOLDER_PHOTO;
 

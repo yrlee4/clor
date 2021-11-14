@@ -40,6 +40,13 @@
 
         <activity android:name=".Fragment2"/>
         <activity android:name=".Fragment3"/>
+        <activity android:name=".ShowResult"/>
+        <activity android:name=".ShowResult2"/>
+        <activity android:name=".ShowResult3"/>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>
