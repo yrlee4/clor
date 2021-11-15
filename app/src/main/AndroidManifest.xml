@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="org.techtown.diary">
+    package="org.ewha5.clorapp">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -13,7 +13,7 @@
                 android:required="true" />
 
     <application
-        android:name=".MyApplication"
+        android:name="org.ewha5.clorapp.MyApplication"
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:icon="@drawable/appicon2"
@@ -21,7 +21,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SingleDiary">
-        <activity android:name=".MainActivity">
+        <activity android:name="org.ewha5.clorapp.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,11 +38,11 @@
                 android:resource="@xml/external" />
         </provider>
 
-        <activity android:name=".Fragment2"/>
-        <activity android:name=".Fragment3"/>
-        <activity android:name=".ShowResult"/>
-        <activity android:name=".ShowResult2"/>
-        <activity android:name=".ShowResult3"/>
+        <activity android:name="org.ewha5.clorapp.Fragment2"/>
+        <activity android:name="org.ewha5.clorapp.Fragment3"/>
+        <activity android:name="org.ewha5.clorapp.ShowResult"/>
+        <activity android:name="org.ewha5.clorapp.ShowResult2"/>
+        <activity android:name="org.ewha5.clorapp.ShowResult3"/>
 
         <meta-data
             android:name="preloaded_fonts"
