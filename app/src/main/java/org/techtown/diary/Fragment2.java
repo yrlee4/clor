@@ -1,6 +1,8 @@
 package org.techtown.diary;
 
 import android.app.AlertDialog;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -12,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -23,22 +26,39 @@ import android.widget.Toast;
 
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import com.github.channguyen.rsv.RangeSliderView;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpResponse;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.NameValuePair;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.HttpClient;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.methods.HttpPost;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.impl.client.DefaultHttpClient;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.message.BasicNameValuePair;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.util.EntityUtils;
 
 import java.io.File;
 import java.io.InputStream;
 import java.util.Date;
+
+/*윤주*/import android.database.Cursor;
 
 public class Fragment2 extends AppCompatActivity {
     private static final String TAG = "Fragment2";
@@ -49,6 +69,11 @@ public class Fragment2 extends AppCompatActivity {
     Uri uri;
     File file;
     Bitmap resultPhotoBitmap;
+
+
+    /*윤주*/String imgPath;
+    public static String URL = "http://192.168.0.160:5000/upload";
+
 
     //추가
     Handler handler = new Handler();
@@ -94,12 +119,49 @@ public class Fragment2 extends AppCompatActivity {
     //서버로 연결
     private void request() {
         handler.postDelayed(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void run() {
+                /*윤주*/ Log.e("path", "-----------"+file+" : "+uri);
+            upload();
             }
             //서버 연결
-        }, 5000);
+        }, 3000);
     }
+
+    /*윤주*/ //업로드 콜
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void upload() {
+        //이미지 위치 : getString(uri)
+        // resultPhotoBitmap
+
+        Log.e("Path", imgPath);
+        Bitmap bm = BitmapFactory.decodeFile(imgPath);
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 90, bao);
+        byte[] ba = bao.toByteArray();
+        new uploadToServer().execute();
+    }
+
+    /*윤주*/
+    // 서버로 업로드
+    public class uploadToServer extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... params){
+            try{
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpPost httppost = new HttpPost(URL);
+                HttpResponse response = httpClient.execute(httppost);
+                String st = EntityUtils.toString(response.getEntity());
+                Log.v(TAG, "In the try loop"+st);
+
+            }catch (Exception e){
+                Log.e("ERROR", "Error in http connection"+e.toString());
+            }
+            return "Success";
+        }
+    }
+
 
     //서버 연결하는 메시지 보여주기
     private void showMessage() {
@@ -156,12 +218,11 @@ public class Fragment2 extends AppCompatActivity {
         startActivityForResult(intent, AppConstants.REQ_PHOTO_CAPTURE);
     }
 
-
     private File createFile() {
         String filename = createFilename();
         File outFile = new File(getFilesDir(), filename);
         Log.d("Main", "File path : " + outFile.getAbsolutePath());
-
+        /*윤주*/imgPath = outFile.getAbsolutePath();
         return outFile;
     }
 
