@@ -2,11 +2,11 @@ package org.ewha5.clorapp;
 
 import android.app.AlertDialog;
 <<<<<<< HEAD:app/src/main/java/org/ewha5/clorapp/Fragment1.java
-=======
+
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.Handler;
->>>>>>> c5b5ab701de8f1e83855802b9ea86a2d84780f52:app/src/main/java/org/techtown/diary/Fragment2.java
 import android.app.ProgressDialog;
 import android.os.Handler;
 import android.content.ContentResolver;
@@ -33,7 +33,13 @@ import androidx.core.content.FileProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+
 import java.io.FileOutputStream;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -45,9 +51,6 @@ import java.util.Date;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-<<<<<<< HEAD:app/src/main/java/org/ewha5/clorapp/Fragment1.java
-public class Fragment1 extends AppCompatActivity {
-    private static final String TAG = "Fragment1";
 =======
 import com.github.channguyen.rsv.RangeSliderView;
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpResponse;
@@ -61,12 +64,12 @@ import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.util.Ent
 import java.io.File;
 import java.io.InputStream;
 import java.util.Date;
-
 /*윤주*/import android.database.Cursor;
 
-public class Fragment2 extends AppCompatActivity {
-    private static final String TAG = "Fragment2";
->>>>>>> c5b5ab701de8f1e83855802b9ea86a2d84780f52:app/src/main/java/org/techtown/diary/Fragment2.java
+
+public class Fragment1 extends AppCompatActivity {
+    private static final String TAG = "Fragment1";
+
 
     Context context;
     ImageView pictureImageView;
@@ -76,8 +79,8 @@ public class Fragment2 extends AppCompatActivity {
     Bitmap resultPhotoBitmap;
 
 
-    /*윤주*/String imgPath;
-    public static String URL = "http://192.168.0.160:5000/upload";
+    /*윤주*/static String imgPath;
+    public static String URL = "http://192.168.0.160:5000/2";
 
 
     //추가
@@ -180,11 +183,14 @@ public class Fragment2 extends AppCompatActivity {
         //이미지 위치 : getString(uri)
         // resultPhotoBitmap
 
+        imgPath =saveBitmapToJpeg(resultPhotoBitmap, "upload");
+        //imgPath = "@drawable/logo.png";
         Log.e("Path", imgPath);
-        Bitmap bm = BitmapFactory.decodeFile(imgPath);
-        ByteArrayOutputStream bao = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 90, bao);
-        byte[] ba = bao.toByteArray();
+        //Bitmap bm = BitmapFactory.decodeFile(imgPath);
+        //ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        //bm.compress(Bitmap.CompressFormat.JPEG, 90, bao);
+        //byte[] ba = bao.toByteArray();
+
         new uploadToServer().execute();
     }
 
@@ -205,6 +211,28 @@ public class Fragment2 extends AppCompatActivity {
             }
             return "Success";
         }
+    }
+
+    /*윤주*/ // 비트맵을 jpg로 변경
+    public String saveBitmapToJpeg(Bitmap bitmap, String name){
+        File storage = getCacheDir();       // 저장이 될 저장소 위치
+        String file_name = name+".jpg";
+        File imgFile = new File(storage, file_name);
+
+        try{
+            imgFile.createNewFile();
+            FileOutputStream out = new FileOutputStream(imgFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.close();
+        }catch(FileNotFoundException fileNotFoundException) {
+            Log.e("FileNotFound ", fileNotFoundException.getMessage());
+        }catch(IOException io){
+            Log.e("IOEXCEPTION ", io.getMessage());
+        }
+        Log.d("imgPath", getCacheDir()+"/"+file_name);
+        return getCacheDir()+"/"+file_name;
+
+
     }
 
 
@@ -259,7 +287,6 @@ public class Fragment2 extends AppCompatActivity {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-
         startActivityForResult(intent, AppConstants.REQ_PHOTO_CAPTURE);
     }
 
