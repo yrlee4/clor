@@ -1,7 +1,6 @@
 package org.ewha5.clorapp;
 
 import android.app.AlertDialog;
-<<<<<<< HEAD:app/src/main/java/org/ewha5/clorapp/Fragment1.java
 
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -50,8 +49,6 @@ import java.util.Base64;
 import java.util.Date;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-=======
 import com.github.channguyen.rsv.RangeSliderView;
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpResponse;
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.NameValuePair;
