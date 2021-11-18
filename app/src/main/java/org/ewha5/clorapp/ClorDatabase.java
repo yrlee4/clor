@@ -8,20 +8,20 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /**
- * 메모 데이터베이스
+ * C'LOR 데이터베이스
  */
-public class NoteDatabase {
-    private static final String TAG = "NoteDatabase";
+public class ClorDatabase {
+    private static final String TAG = "ClorDatabase";
 
     /**
      * 싱글톤 인스턴스
      */
-    private static NoteDatabase database;
+    private static ClorDatabase database;
 
     /**
-     * table name for MEMO
+     * table name for clor
      */
-    public static String TABLE_NOTE = "NOTE";
+    public static String TABLE_CLOR = "CLOR";
 
     /**
      * version
@@ -47,16 +47,16 @@ public class NoteDatabase {
     /**
      * 생성자
      */
-    private NoteDatabase(Context context) {
+    private ClorDatabase(Context context) {
         this.context = context;
     }
 
     /**
      * 인스턴스 가져오기
      */
-    public static NoteDatabase getInstance(Context context) {
+    public static ClorDatabase getInstance(Context context) {
         if (database == null) {
-            database = new NoteDatabase(context);
+            database = new ClorDatabase(context);
         }
 
         return database;
@@ -133,11 +133,11 @@ public class NoteDatabase {
         public void onCreate(SQLiteDatabase db) {
             println("creating database [" + AppConstants.DATABASE_NAME + "].");
 
-            // TABLE_NOTE
-            println("creating table [" + TABLE_NOTE + "].");
+            // TABLE CLOR
+            println("creating table [" + TABLE_CLOR + "].");
 
             // drop existing table
-            String DROP_SQL = "drop table if exists " + TABLE_NOTE;
+            String DROP_SQL = "drop table if exists " + TABLE_CLOR;
             try {
                 db.execSQL(DROP_SQL);
             } catch(Exception ex) {
@@ -145,13 +145,14 @@ public class NoteDatabase {
             }
 
             // create table
-            String CREATE_SQL = "create table " + TABLE_NOTE + "("
+            String CREATE_SQL = "create table " + TABLE_CLOR + "("
                     + "  _id INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT, "
-                    + "  MOOD TEXT, "
-                    + "  PICTURE TEXT DEFAULT '', "
-                    + "  CREATE_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
-                    + "  MODIFY_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP "
-                    + ")";
+                    + "  CATEGORY TEXT DEFAULT'', "
+                    + "  COMB TEXT DEFAULT'', "
+                    + "  MOOD TEXT DEFAULT'', "
+                    + " PICTURE TEXT DEFAULT '' "
+                    +")";
+
             try {
                 db.execSQL(CREATE_SQL);
             } catch(Exception ex) {
@@ -159,9 +160,7 @@ public class NoteDatabase {
             }
 
             // create index
-            String CREATE_INDEX_SQL = "create index " + TABLE_NOTE + "_IDX ON " + TABLE_NOTE + "("
-                    + "CREATE_DATE"
-                    + ")";
+            String CREATE_INDEX_SQL = "create index " +  TABLE_CLOR +  "_IDX ON " + TABLE_CLOR ;
             try {
                 db.execSQL(CREATE_INDEX_SQL);
             } catch(Exception ex) {

@@ -38,11 +38,12 @@
                 android:resource="@xml/external" />
         </provider>
 
+        <activity android:name="org.ewha5.clorapp.Fragment1"/>
         <activity android:name="org.ewha5.clorapp.Fragment2"/>
-        <activity android:name="org.ewha5.clorapp.Fragment3"/>
         <activity android:name="org.ewha5.clorapp.ShowResult"/>
         <activity android:name="org.ewha5.clorapp.ShowResult2"/>
         <activity android:name="org.ewha5.clorapp.ShowResult3"/>
+        <activity android:name="org.ewha5.clorapp.ViewDB"/>
 
         <meta-data
             android:name="preloaded_fonts"

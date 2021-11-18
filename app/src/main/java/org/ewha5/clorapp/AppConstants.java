@@ -7,6 +7,12 @@ import java.text.SimpleDateFormat;
 
 public class AppConstants {
 
+
+    public static final int REQUEST_CODE_BUTTON1 = 301;
+    public static final int REQUEST_CODE_BUTTON2 = 302;
+    public static final int REQUEST_CODE_BUTTON3 = 303;
+
+
     public static final int REQ_SHOW_COMBINATION = 101;
     public static final int REQ_SHOW_COLORS = 102;
 
@@ -24,7 +30,7 @@ public class AppConstants {
 
     public static final String KEY_URI_PHOTO = "URI_PHOTO";
 
-    public static String DATABASE_NAME = "note.db";
+    public static String DATABASE_NAME = "clor.db";
 
     public static final int MODE_INSERT = 1;
     public static final int MODE_MODIFY = 2;
