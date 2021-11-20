@@ -56,6 +56,7 @@ public class Fragment1 extends AppCompatActivity {
 
     ProgressDialog dialog;
     String picturePath;
+    String mCurrentPath;
 
     private File tempFile;
 
@@ -237,6 +238,33 @@ public class Fragment1 extends AppCompatActivity {
                     //setPicture(file.getAbsolutePath(), 8);
                     resultPhotoBitmap = decodeSampledBitmapFromResource(file, pictureImageView.getWidth(), pictureImageView.getHeight());
                     pictureImageView.setImageBitmap(resultPhotoBitmap);
+
+                    /*
+                    if (intent != null && resultCode == RESULT_OK ) {
+
+
+                        String[] filePathColumn = {picturePath};
+                        Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
+
+                        if(cursor == null || cursor.getCount() <1){
+                            return;
+                        }
+
+                        cursor.moveToFirst();
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+
+                        if(columnIndex < 0)
+                            return;
+
+                        mCurrentPath = cursor.getString(columnIndex);
+                        tempFile = new File(mCurrentPath);
+
+                        cursor.close();
+
+                        setImage();
+                    }
+                    
+                     */
 
                     break;
 
