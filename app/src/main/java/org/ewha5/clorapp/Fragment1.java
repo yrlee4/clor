@@ -3,6 +3,11 @@ package org.ewha5.clorapp;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.Matrix;
+import android.graphics.Picture;
+import android.media.ExifInterface;
 import android.os.Environment;
 import android.os.Handler;
 import android.content.ContentResolver;
@@ -41,6 +46,7 @@ public class Fragment1 extends AppCompatActivity {
     Context context;
     ImageView pictureImageView;
     boolean isPhotoCaptured;
+
     Uri uri;
     File file;
     Bitmap resultPhotoBitmap;
@@ -50,6 +56,9 @@ public class Fragment1 extends AppCompatActivity {
 
     ProgressDialog dialog;
     String picturePath;
+
+    private File tempFile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,12 +134,11 @@ public class Fragment1 extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), ShowResult.class);
 
                 //사진 경로 함께 보내기
-                picturePath = savePicture();
                 intent.putExtra("path", picturePath);
-                /*사진 경로 확인용 메시지
+                //사진 경로 확인용 메시지
                 Toast.makeText(getApplicationContext(), picturePath+" 파일 경로",
                         Toast.LENGTH_SHORT).show();
-                 */
+
                 startActivityForResult(intent, AppConstants.REQ_SHOW_COMBINATION);
             }
         });
@@ -180,22 +188,36 @@ public class Fragment1 extends AppCompatActivity {
         startActivityForResult(intent, AppConstants.REQ_PHOTO_CAPTURE);
     }
 
-
+    //파일 경로 수정
+    /*
     private File createFile() {
         String filename = createFilename();
-        File outFile = new File(getFilesDir(), filename);
+        //File outFile = new File(getFilesDir(), filename);
+        File outFile = new File("/sdcard/Android/data/org.ewha5.clorapp/files", filename);
         Log.d("Main", "File path : " + outFile.getAbsolutePath());
 
         return outFile;
     }
+     */
 
+    private File createFile() {
+        String filename = createFilename();
+        File outFile = new File(getExternalFilesDir(null), filename);
+        picturePath = outFile.toString();
+        Log.d("Main", "File path : " + outFile.getAbsolutePath());
+        return outFile;
+    }
+
+    //사진 촬영 끝...
+
+    //
     public void showPhotoSelectionActivity() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-
         startActivityForResult(intent, AppConstants.REQ_PHOTO_SELECTION);
     }
+    //
 
     /**
      * 다른 액티비티로부터의 응답 처리
@@ -209,8 +231,8 @@ public class Fragment1 extends AppCompatActivity {
             switch (requestCode) {
                 case AppConstants.REQ_PHOTO_CAPTURE:  // 사진 찍는 경우
                     Log.d(TAG, "onActivityResult() for REQ_PHOTO_CAPTURE.");
-
                     Log.d(TAG, "resultCode : " + resultCode);
+
 
                     //setPicture(file.getAbsolutePath(), 8);
                     resultPhotoBitmap = decodeSampledBitmapFromResource(file, pictureImageView.getWidth(), pictureImageView.getHeight());
@@ -223,6 +245,10 @@ public class Fragment1 extends AppCompatActivity {
 
                     Uri fileUri = intent.getData();
 
+
+                    Log.d(TAG, "fileUri : " + fileUri);
+
+                    /*
                     ContentResolver resolver = context.getContentResolver();
 
                     try {
@@ -237,10 +263,84 @@ public class Fragment1 extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
+                     */
+
+                    /*
+                    Cursor cursor = null;
+
+                    try{
+                        String[] proj = { MediaStore.Images.Media.DATA };
+                        assert fileUri != null;
+                        cursor = getContentResolver().query(fileUri, proj, null, null, null);
+
+                        assert cursor != null;
+                        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                        cursor.moveToFirst();
+                        tempFile = new File(cursor.getString(column_index));
+
+                    }finally {
+                        if (cursor != null) {
+                            cursor.close();
+                        }
+                    }
+
+                    setImage();
+
+                     */
+
+                    if (intent != null && resultCode == RESULT_OK ) {
+
+
+                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                        Cursor cursor = getContentResolver().query(fileUri, filePathColumn, null, null, null);
+
+                        if(cursor == null || cursor.getCount() <1){
+                            return;
+                        }
+
+                        cursor.moveToFirst();
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+
+                        if(columnIndex < 0)
+                            return;
+
+                        picturePath = cursor.getString(columnIndex);
+                        tempFile = new File(picturePath);
+
+
+                        cursor.close();
+
+                        setImage();
+                    }
+
                     break;
 
             }
         }
+    }
+    //onActivitybyresult 끝.
+
+    private void setImage() {
+
+        ImageView imageView = findViewById(R.id.pictureImageView);
+
+        /*
+        ExifInterface exif = null;
+        int exifOrientation;
+        int exifDegree;
+        if (exif != null) {
+            exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            exifDegree = exifOrientationToDegrees(exifOrientation);
+        } else { exifDegree = 0; }
+        imageView.setImageBitmap(rotate(originalBm,exifDegree));
+         */
+
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
+
+        imageView.setImageBitmap(originalBm);
+
     }
 
     public static Bitmap decodeSampledBitmapFromResource(File res, int reqWidth, int reqHeight) {
@@ -258,6 +358,7 @@ public class Fragment1 extends AppCompatActivity {
 
         return BitmapFactory.decodeFile(res.getAbsolutePath(),options);
     }
+
 
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
@@ -283,12 +384,12 @@ public class Fragment1 extends AppCompatActivity {
 
     private String createFilename() {
         Date curDate = new Date();
-        String curDateStr = String.valueOf(curDate.getTime());
+        String curDateStr = String.valueOf(curDate.getTime()) + ".jpg"; //확장자로 저장
         return curDateStr;
     }
 
 
-    //사진 저장하는 경로 save
+    /*
     public String savePicture() {
         if (resultPhotoBitmap == null) {
             AppConstants.println("No picture to be saved.");
@@ -307,7 +408,7 @@ public class Fragment1 extends AppCompatActivity {
 
         try {
             FileOutputStream outstream = new FileOutputStream(picturePath);
-            resultPhotoBitmap.compress(Bitmap.CompressFormat.PNG, 100, outstream);
+            resultPhotoBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outstream);
             outstream.close();
         } catch(Exception e) {
             e.printStackTrace();
@@ -315,6 +416,27 @@ public class Fragment1 extends AppCompatActivity {
 
         return picturePath;
     }
+     */
+
+    private int exifOrientationToDegrees(int exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            return 90;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            return 180;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            return 270;
+        } return 0;
+
+    }
+
+    // 이미지를 회전시키는 메서드 선언
+    private Bitmap rotate(Bitmap bitmap, float degree) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+
 
 
 }

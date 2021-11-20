@@ -143,7 +143,7 @@ public class ClorAdapter extends RecyclerView.Adapter<ClorAdapter.ViewHolder>
 
             if (picturePath != null && !picturePath.equals("")) {
                 pictureExistsImageView.setVisibility(View.VISIBLE);
-                //pictureExistsImageView.setImageURI(Uri.parse("file://" + picturePath));
+                pictureExistsImageView.setImageURI(Uri.parse("file://" + picturePath));
                 pictureImageView.setVisibility(View.VISIBLE);
                 pictureImageView.setImageURI(Uri.parse("file://" + picturePath));
 
