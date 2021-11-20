@@ -1,5 +1,9 @@
 package org.ewha5.clorapp;
 
+import static org.ewha5.clorapp.AppConstants.REQUEST_CODE_BUTTON1;
+import static org.ewha5.clorapp.AppConstants.REQUEST_CODE_BUTTON2;
+import static org.ewha5.clorapp.AppConstants.REQUEST_CODE_BUTTON3;
+
 import android.os.Environment;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,9 +24,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    public static final int REQUEST_CODE_BUTTON1 = 201;
-    public static final int REQUEST_CODE_BUTTON2 = 202;
-
+    public static ClorDatabase mDatabase = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
         menu01Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), Fragment2.class);
-                startActivityForResult(intent, REQUEST_CODE_BUTTON1);
+                Intent intent = new Intent(getApplicationContext(), Fragment1.class);
+                startActivityForResult(intent, AppConstants.REQUEST_CODE_BUTTON1);
             }
         });
 
@@ -42,8 +44,17 @@ public class MainActivity extends AppCompatActivity {
         menu02Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Fragment3.class);
-                startActivityForResult(intent, REQUEST_CODE_BUTTON2);
+                Intent intent = new Intent(getApplicationContext(), Fragment2.class);
+                startActivityForResult(intent, AppConstants.REQUEST_CODE_BUTTON2);
+            }
+        });
+
+        Button menu03Button = findViewById(R.id.button3);
+        menu03Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ViewDB.class);
+                startActivityForResult(intent, AppConstants.REQUEST_CODE_BUTTON3);
             }
         });
 
@@ -70,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .start();
 
+        //데이터베이스 열기
+        openDatabase();
+
     }
 
     public void setPicturePath() {
@@ -83,6 +97,34 @@ public class MainActivity extends AppCompatActivity {
 
     private void println(String data) {
         Log.d(TAG, data);
+    }
+
+    //데이터베이스 method
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (mDatabase != null) {
+            mDatabase.close();
+            mDatabase = null;
+        }
+    }
+    /**
+     * 데이터베이스 열기 (데이터베이스가 없을 때는 만들기)
+     */
+    public void openDatabase() {
+        // open database
+        if (mDatabase != null) {
+            mDatabase.close();
+            mDatabase = null;
+        }
+
+        mDatabase = ClorDatabase.getInstance(this);
+        boolean isOpen = mDatabase.open();
+        if (isOpen) {
+            Log.d(TAG, "Note database is open.");
+        } else {
+            Log.d(TAG, "Note database is not open.");
+        }
     }
 
 

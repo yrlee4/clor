@@ -19,12 +19,12 @@
         android:visibility="visible">
 
         <ImageView
-            android:id="@+id/moodImageView"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
-            android:layout_gravity="center_vertical"
-            android:padding="5dp"
-            app:srcCompat="@drawable/smile5_48" />
+            android:id="@+id/pictureExistsImageView"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/picture_128" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,11 +34,13 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/contentsTextView"
+                android:id="@+id/categoryTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="내용"
-                android:textSize="24sp" />
+                android:fontFamily="serif"
+                android:text="카테고리"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -46,40 +48,35 @@
                 android:layout_marginTop="10dp">
 
                 <ImageView
-                    android:id="@+id/weatherImageView"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_alignParentLeft="true"
-                    android:src="@drawable/weather_icon_1" />
-
-                <ImageView
-                    android:id="@+id/pictureExistsImageView"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@+id/weatherImageView"
-                    android:src="@drawable/picture_128" />
+                    android:id="@+id/moodImageView"
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
+                    android:layout_gravity="center_vertical"
+                    android:padding="5dp"
+                    app:srcCompat="@drawable/face3_33" />
 
                 <TextView
-                    android:id="@+id/locationTextView"
+                    android:id="@+id/combTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:text="강남구 삼성동"
-                    android:textSize="16sp" />
+                    android:layout_centerInParent="true"
+                    android:fontFamily="serif"
+                    android:text="보색 조합"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/dateTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:text="02월 10일"
-                    android:textColor="#FF0000FF"
-                    android:textSize="16sp" />
 
             </RelativeLayout>
+
+            <TextView
+                android:id="@+id/dateTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="serif"
+                android:text="날짜"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -90,7 +87,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone">>
 
         <ImageView
             android:id="@+id/pictureImageView"
@@ -100,6 +97,7 @@
             android:layout_margin="10dp"
             android:padding="5dp"
             android:src="@drawable/noimagefound" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -111,56 +109,56 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/contentsTextView2"
+                android:id="@+id/categoryTextView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="내용"
-                android:textSize="24sp" />
+                android:fontFamily="serif"
+                android:text="카테고리"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/dateTextView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="serif"
+                android:gravity="right"
+                android:text="날짜"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <RelativeLayout
-                android:layout_width="match_parent"
+                android:layout_width="224dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp">
 
                 <ImageView
                     android:id="@+id/moodImageView2"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
                     android:layout_alignParentLeft="true"
                     android:padding="5dp"
-                    app:srcCompat="@drawable/smile5_48" />
-
-                <ImageView
-                    android:id="@+id/weatherImageView2"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@+id/moodImageView2"
-                    android:src="@drawable/weather_icon_1" />
+                    app:srcCompat="@drawable/face3_33" />
 
                 <TextView
-                    android:id="@+id/locationTextView2"
+                    android:id="@+id/combTextView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:text="강남구 삼성동"
-                    android:textSize="16sp" />
+                    android:layout_centerInParent="true"
+                    android:fontFamily="serif"
+                    android:text="보색 조합"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/dateTextView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:text="02월 10일"
-                    android:textColor="#FF0000FF"
-                    android:textSize="16sp" />
 
             </RelativeLayout>
 
         </LinearLayout>
 
     </LinearLayout>
+
+
+
+
 
 </androidx.cardview.widget.CardView>

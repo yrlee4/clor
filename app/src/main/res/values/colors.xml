@@ -9,4 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="beigepink">#CDACA2</color>
     <color name= "pink">#FFCA846F</color>
+    <color name= "downpink">#93888C</color>
+    <color name= "navy">#485E6C</color>
+    <color name= "green">#ACC194</color>
+    <color name= "beige">#EDEAD7</color>
 </resources>

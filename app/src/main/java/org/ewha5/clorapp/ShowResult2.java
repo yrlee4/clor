@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +18,13 @@ public class ShowResult2 extends AppCompatActivity {
 
     private static final String TAG = "ShowResult2";
 
+    //전달 받아야하는 값
+    public String color_value = "#efe8d0";
+    public String[] comp = {"#A7ACB2", "#7B7663", "#434B4D"};
+    public String[] tonal = {"#EAD7C9", "#AA8E78", "#D8CDB0"};
+    //
+
+    String finalcolor;
 
     ImageView upper1;
     ImageView upper2;
@@ -33,6 +41,12 @@ public class ShowResult2 extends AppCompatActivity {
     RadioButton comb1, comb2, comb3;
     RadioGroup radioGroup2;
 
+    //앞에서 받기
+    String choice_comb;
+    String path;
+    String type;
+    //
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.show_result2);
@@ -43,74 +57,121 @@ public class ShowResult2 extends AppCompatActivity {
 
         select_comb2 = findViewById(R.id.select_comb2);
 
-        //색상 변경 - 보색으로 2.png 기준
-        upper1 = findViewById(R.id.upper1);
-        upper1.setColorFilter(Color.parseColor("#E5DABF"), PorterDuff.Mode.SRC_IN);
-        under1 = findViewById(R.id.under1);
-        under1.setColorFilter(Color.parseColor("#A7ACB2"), PorterDuff.Mode.SRC_IN);
-        under1.bringToFront();
+        Intent secondIntent = getIntent();
+        int choice = secondIntent.getExtras().getInt("choice");
 
-        upper2 = findViewById(R.id.upper2);
-        upper2.setColorFilter(Color.parseColor("#E5DABF"), PorterDuff.Mode.SRC_IN);
-        under2 = findViewById(R.id.under2);
-        under2.setColorFilter(Color.parseColor("#7B7663"), PorterDuff.Mode.SRC_IN);
-        under2.bringToFront();
+        //추가로 받아오기
+        path = secondIntent.getStringExtra("path");
+        type = secondIntent.getStringExtra("type");
+        //
 
-        upper3 = findViewById(R.id.upper3);
-        upper3.setColorFilter(Color.parseColor("#E5DABF"), PorterDuff.Mode.SRC_IN);
-        under3 = findViewById(R.id.under3);
-        under3.setColorFilter(Color.parseColor("#434B4D"), PorterDuff.Mode.SRC_IN);
-        under2.bringToFront();
+        /* //확인용 msg
+        Toast.makeText(getApplicationContext(), path+" 파일경로 "+ type+ " 카테고리 ",
+                Toast.LENGTH_SHORT).show();
+        */
+
+        if(choice == 0){
+            choice_comb = "0";
+            tonalicon2.setVisibility(View.INVISIBLE);
+            //색상 변경 - 보색으로 2.png 기준
+            upper1 = findViewById(R.id.upper1);
+            upper1.setColorFilter(Color.parseColor(color_value), PorterDuff.Mode.SRC_IN);
+            under1 = findViewById(R.id.under1);
+            under1.setColorFilter(Color.parseColor(comp[0]), PorterDuff.Mode.SRC_IN);
+            under1.bringToFront();
+
+            upper2 = findViewById(R.id.upper2);
+            upper2.setColorFilter(Color.parseColor(color_value), PorterDuff.Mode.SRC_IN);
+            under2 = findViewById(R.id.under2);
+            under2.setColorFilter(Color.parseColor(comp[1]), PorterDuff.Mode.SRC_IN);
+            under2.bringToFront();
+
+            upper3 = findViewById(R.id.upper3);
+            upper3.setColorFilter(Color.parseColor(color_value), PorterDuff.Mode.SRC_IN);
+            under3 = findViewById(R.id.under3);
+            under3.setColorFilter(Color.parseColor(comp[2]), PorterDuff.Mode.SRC_IN);
+            under3.bringToFront();
+
+        } else if (choice == 1){
+            choice_comb = "1";
+            conicon2.setVisibility(View.INVISIBLE);
+            upper1 = findViewById(R.id.upper1);
+            upper1.setColorFilter(Color.parseColor(color_value), PorterDuff.Mode.SRC_IN);
+            under1 = findViewById(R.id.under1);
+            under1.setColorFilter(Color.parseColor(tonal[0]), PorterDuff.Mode.SRC_IN);
+            under1.bringToFront();
+
+            upper2 = findViewById(R.id.upper2);
+            upper2.setColorFilter(Color.parseColor(color_value), PorterDuff.Mode.SRC_IN);
+            under2 = findViewById(R.id.under2);
+            under2.setColorFilter(Color.parseColor(tonal[1]), PorterDuff.Mode.SRC_IN);
+            under2.bringToFront();
+
+            upper3 = findViewById(R.id.upper3);
+            upper3.setColorFilter(Color.parseColor(color_value), PorterDuff.Mode.SRC_IN);
+            under3 = findViewById(R.id.under3);
+            under3.setColorFilter(Color.parseColor(tonal[2]), PorterDuff.Mode.SRC_IN);
+            under3.bringToFront();
+        }
 
         //라디오 버튼 설정
         comb1 = (RadioButton) findViewById(R.id.comb1);
-        /*
-        rbtn1.setOnClickListener(new RadioButton.OnClickListener(){
+        comb1.setOnClickListener(new RadioButton.OnClickListener(){
            @Override
-            public void onClick(View view) {
-            }
+           public void onClick(View view) {
+               if (choice == 0) {
+                   // 보색 조합으로 연결
+                   finalcolor = comp[0];
+               } else{
+                   finalcolor = tonal[0];
+               }
+           }
         });
-         */
 
         comb2 = (RadioButton) findViewById(R.id.comb2);
-        /*
-        rbtn2.setOnClickListener(new RadioButton.OnClickListener(){
+        comb2.setOnClickListener(new RadioButton.OnClickListener(){
             @Override
             public void onClick(View view) {
+                if (choice == 0) {
+                    // 보색 조합으로 연결
+                    finalcolor = comp[1];
+                } else{
+                    finalcolor = tonal[1];
+                }
             }
         });
-         */
-        comb3 = (RadioButton) findViewById(R.id.comb3);
-        /*
-        rbtn2.setOnClickListener(new RadioButton.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-            }
-        });
-         */
 
-        //라디오 그룹 설정
-        radioGroup2 = findViewById(R.id.radioGroup2);
-        int checkedRadioButtonId = radioGroup2.getCheckedRadioButtonId();
-        if (checkedRadioButtonId == R.id.comb1) {
-            // 선택지1
-        }
-        else{
-            if (checkedRadioButtonId == R.id.comb2) {
-                // 선택지2
+        comb3 = (RadioButton) findViewById(R.id.comb3);
+        comb3.setOnClickListener(new RadioButton.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if (choice == 0) {
+                    // 보색 조합으로 연결
+                    finalcolor = comp[2];
+                } else{
+                    finalcolor = tonal[2];
+                }
             }
-            else {
-                // 선택지3
-            }
-        }
+        });
 
         //다음 단계로 이동
         Button finalselect = findViewById(R.id.finalselect);
         finalselect.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                //다음 단계로 연결
                 Intent intent = new Intent(getApplicationContext(), ShowResult3.class);
+                intent.putExtra("final", finalcolor);
+                //추가
+                intent.putExtra("comb", choice_comb);
+                intent.putExtra("type", type);
+                intent.putExtra("path", path);
+                //
+
+                /*확인용 msg
+                Toast.makeText(getApplicationContext(), path+" :파일경로  "+ type+ " :카테고리  "+choice_comb+ " :선택",
+                        Toast.LENGTH_SHORT).show();
+                */
+
                 startActivityForResult(intent, AppConstants.FINAL_FIGURE);
             }
         });

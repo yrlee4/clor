@@ -1,2 +1,2 @@
-rootProject.name = "SingleDiary"
+rootProject.name = "ClorApp"
 include ':app'
