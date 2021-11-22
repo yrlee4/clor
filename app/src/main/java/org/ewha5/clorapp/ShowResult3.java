@@ -29,7 +29,7 @@ public class ShowResult3 extends AppCompatActivity {
     private static final String TAG = "ShowResult3";
 
     //전달받아야 하는 값 + [카테고리 값]
-    public String color_value = "#899cdc";
+    public String color_value = "#efe8d0";
     //
 
     ImageView final1;
