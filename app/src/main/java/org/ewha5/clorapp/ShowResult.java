@@ -26,8 +26,8 @@ public class ShowResult extends AppCompatActivity {
     private static final String TAG = "ShowResult";
 
     //전달받아야하는 값
-    public String color_value = "#efe8d0";
-    public String cloth_type = "블라우스";
+    public String color_value = "#899cdc";
+    public String cloth_type = "티셔츠";
     //
 
     ImageView colorimage; //색상 칩

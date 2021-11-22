@@ -19,9 +19,9 @@ public class ShowResult2 extends AppCompatActivity {
     private static final String TAG = "ShowResult2";
 
     //전달 받아야하는 값
-    public String color_value = "#efe8d0";
-    public String[] comp = {"#A7ACB2", "#7B7663", "#434B4D"};
-    public String[] tonal = {"#EAD7C9", "#AA8E78", "#D8CDB0"};
+    public String color_value = "#899cdc";
+    public String[] comp = {"#b9c386" , "#d0d1d3", "#DBC588"};
+    public String[] tonal = {"#434c75", "#6e86a2", "#2c67a9"};
     //
 
     String finalcolor;
