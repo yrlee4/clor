@@ -45,6 +45,7 @@ public class ShowResult2 extends AppCompatActivity {
     String choice_comb;
     String path;
     String type;
+    //
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,13 +65,13 @@ public class ShowResult2 extends AppCompatActivity {
         type = secondIntent.getStringExtra("type");
         //
 
-        /*확인용 msg
-        Toast.makeText(getApplicationContext(), path+" 파일경로"+ type+ "카테고리",
+        /* //확인용 msg
+        Toast.makeText(getApplicationContext(), path+" 파일경로 "+ type+ " 카테고리 ",
                 Toast.LENGTH_SHORT).show();
         */
 
         if(choice == 0){
-            choice_comb = "보색 조합";
+            choice_comb = "0";
             tonalicon2.setVisibility(View.INVISIBLE);
             //색상 변경 - 보색으로 2.png 기준
             upper1 = findViewById(R.id.upper1);
@@ -92,7 +93,7 @@ public class ShowResult2 extends AppCompatActivity {
             under3.bringToFront();
 
         } else if (choice == 1){
-            choice_comb = "유사색 조합";
+            choice_comb = "1";
             conicon2.setVisibility(View.INVISIBLE);
             upper1 = findViewById(R.id.upper1);
             upper1.setColorFilter(Color.parseColor(color_value), PorterDuff.Mode.SRC_IN);
@@ -167,7 +168,7 @@ public class ShowResult2 extends AppCompatActivity {
                 //
 
                 /*확인용 msg
-                Toast.makeText(getApplicationContext(), path+" :파일경로"+ type+ " :카테고리"+choice_comb+ " :선택",
+                Toast.makeText(getApplicationContext(), path+" :파일경로  "+ type+ " :카테고리  "+choice_comb+ " :선택",
                         Toast.LENGTH_SHORT).show();
                 */
 

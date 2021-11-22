@@ -1,9 +1,12 @@
 package org.ewha5.clorapp;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -54,12 +57,12 @@ public class ShowResult extends AppCompatActivity {
         //사진 파일 받아오기
         Intent secondIntent = getIntent();
         path = secondIntent.getStringExtra("path");
-        //
 
-        /* //확인용 msg
+        /*확인용 msg
         Toast.makeText(getApplicationContext(), path+" 파일경로",
                 Toast.LENGTH_SHORT).show();
-        */
+         */
+
 
         line1 = findViewById(R.id.line1);
         line2 = findViewById(R.id.line2);
