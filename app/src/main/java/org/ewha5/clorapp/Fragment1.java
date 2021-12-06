@@ -2,9 +2,15 @@ package org.ewha5.clorapp;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ContentUris;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.graphics.ImageDecoder;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.os.Environment;
 import android.os.Handler;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,22 +42,22 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 /*윤주*/
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.io.filefilter.TrueFileFilter;
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.entity.StringEntity;
-
 import java.net.URL;
+import java.util.List;
 
 import android.util.Base64;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Fragment1 extends AppCompatActivity {
-    subThread subthread;
     private static final String TAG = "Fragment1";
 
     //Context context;
@@ -60,10 +66,11 @@ public class Fragment1 extends AppCompatActivity {
 
     Uri uri;
     File file;
-    static Bitmap resultPhotoBitmap;
+    public static Bitmap resultPhotoBitmap;
+    boolean received;
 
     /*윤주*/
-    public static String URL = "http://146.56.137.184:5000/receive";
+    public static String URL = "http://146.56.166.169:5000/receive";
 
 
     //추가
@@ -72,6 +79,7 @@ public class Fragment1 extends AppCompatActivity {
     ProgressDialog dialog;
     String picturePath;
     String mCurrentPath;
+    public static String[] result_color = new String[7];
 
     private File tempFile;
 
@@ -108,22 +116,30 @@ public class Fragment1 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //웹 서버로 연결
+                //showMessage();
+
+                Intent intent = new Intent(getApplicationContext(), ShowResult.class);
+
                 request();
+                ProgressDialog pdialog = ProgressDialog.show(Fragment1.this, "", "서버에서 정보를 가져오는 중입니다.");
+                //dialog.setMax((int) 50000);
+                //dialog.setProgress((int) 50000);
 
+                //pdialog.show();
+                //Log.e(TAG, "Here");
 
+                //while(!received){
+                    //Log.e(TAG,"NOOO");
+                    /*if(received){
+                        Log.e(TAG, "YESS");
+                        pdialog.dismiss();
+                        startActivityForResult(intent, AppConstants.REQ_SHOW_COMBINATION);
+                        break;
+                    }*/
+                    //continue;
+                //}
 
-
-
-                //프로그레스 바 - 서버 후 수정 필요
-                dialog = new ProgressDialog(Fragment1.this);
-                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                dialog.setMessage("서버에서 정보를 받아오는 중입니다.");
-                dialog.setMax((int) 50000);
-                dialog.setProgress((int) 50000);
-                dialog.show();
-
-                //받아오고 나면,,
-                showMessage();
+                Log.e(TAG, "여기여기여기여기여기여ㅣ겨이겨이겨이겨이");
 
             }
 
@@ -136,21 +152,21 @@ public class Fragment1 extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void run() {
+                Log.e(TAG, "HHHHHHHHHHHHHHHH");
                 if(Build.VERSION.SDK_INT > 8){
                     StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
                     StrictMode.setThreadPolicy(policy);
                 }
 
-                //subThread.sendHttpWithMsg(URL);
-
+                Log.e(TAG, "HEEEERRRREEEEEEE");
                 post(URL);
             }
             //서버 연결
-        }, 3000);
+        }, 1000);
     }
 
     public void post(String url){
-
+        received = false;
         try{
             JSONObject obj = new JSONObject();
             try {
@@ -179,8 +195,16 @@ public class Fragment1 extends AppCompatActivity {
             Log.e(TAG, "SENT");
 
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String returnMsg = in.readLine();
-            System.out.println("응답메시지:" + returnMsg);
+            in.readLine();      // '[' 가 들어옴 (무시)
+            for (int i = 0; i<7; i++){
+                result_color[i] = in.readLine();
+                result_color[i] = result_color[i].replace(" ", "");
+                result_color[i] = result_color[i].replace(",", "");
+                result_color[i] = result_color[i].replace("\"", "");
+                //System.out.println("The string after removing character: " + result_color[i]);
+            }
+            //in.readLine();
+                           // 전송결과를 전역 변수에 저장
             
             //응답코드 수신
             int responseCode = conn.getResponseCode();
@@ -191,6 +215,8 @@ public class Fragment1 extends AppCompatActivity {
             } else{
                 System.out.println(responseCode+":응답코드");
             }
+            Intent intent = new Intent(getApplicationContext(), ShowResult.class);
+            startActivityForResult(intent, AppConstants.REQ_SHOW_COMBINATION);
 
 
         } catch (UnsupportedEncodingException e) {
@@ -214,7 +240,6 @@ public class Fragment1 extends AppCompatActivity {
     }
 
 
-
     //서버 연결 후, 다음 화면 넘어가기 위한 메시지
     private void showMessage() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -222,36 +247,65 @@ public class Fragment1 extends AppCompatActivity {
         builder.setMessage("조합을 확인할까요?");
         builder.setIcon(android.R.drawable.ic_dialog_alert);
 
+
         builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-
                 //결과 보여주기 - ShowResult class로 연결
+
+                //dialog.dismiss();
                 Intent intent = new Intent(getApplicationContext(), ShowResult.class);
 
                 //사진 경로 함께 보내기
-                intent.putExtra("path", picturePath);
+                //intent.putExtra("path", picturePath);
+               // startActivityForResult(intent, AppConstants.REQ_SHOW_COMBINATION);
                 //사진 경로 확인용 메시지
-                Toast.makeText(getApplicationContext(), picturePath+" 파일 경로",
-                        Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), picturePath+" 파일 경로", Toast.LENGTH_SHORT).show();
+                //AlertDialog dialogs = builder.create();
+                //dialogs.show();
+                //dialogs.setCancelable(false);
+                //프로그레스 바 - 서버 후 수정 필요
 
+                ProgressDialog pdialog = new ProgressDialog(Fragment1.this);
+                pdialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                pdialog.setMessage("서버에서 정보를 받아오는 중입니다.");
+                //dialogc.setMax((int) 50000);
+                //dialogc.setProgress((int) 50000);
+                pdialog.show();
+                Log.e(TAG, "Here");
+                //request();
+
+
+                //받아오고 나면,,
+
+                while(!received){
+                    //Log.e(TAG,"NOOO");
+                    if(received){
+                        Log.e(TAG, "YESS");
+                        pdialog.dismiss();
+                        break;
+                    }
+                    //continue;
+                }
+                //dialogs.dismiss();
+                Log.e(TAG, "여기여기여기여기여기여ㅣ겨이겨이겨이겨이");
                 startActivityForResult(intent, AppConstants.REQ_SHOW_COMBINATION);
+                //Log.e(TAG, "저저기저깆거직저기적지겆기");
+                //
             }
         });
-        /*
-        builder.setNeutralButton("취소", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
 
-            }
-        });
-        */
         builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 //설정하기
+                //dialog.dismiss();
+
             }
         });
         AlertDialog dialog = builder.create();
 
         dialog.show();
+
+
     }
 
     /*
@@ -266,6 +320,7 @@ public class Fragment1 extends AppCompatActivity {
                 file.delete();
             }
             file.createNewFile();
+            Log.e(TAG, file.getAbsolutePath());
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -275,16 +330,52 @@ public class Fragment1 extends AppCompatActivity {
         } else {
             uri = Uri.fromFile(file);
         }
-
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 
         startActivityForResult(intent, AppConstants.REQ_PHOTO_CAPTURE);
+        /*if(intent.resolveActivity(getPackageManager()) != null){
+            File photoFile = null;
+
+            try{
+                photoFile = createImageFile();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+                Log.e(TAG, "사진오류");
+            }
+            if(photoFile!=null){
+                Uri photoURI = FileProvider.getUriForFile(this, "org.ewha5.clorapp", photoFile);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                Log.e(TAG, String.valueOf(intent));
+                startActivityForResult(intent, AppConstants.REQ_PHOTO_CAPTURE);
+            }
+            else{
+                Log.e(TAG, "photoFile = NULL");
+            }
+        }*/
+        /*
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if(isIntentAvailable(getApplicationContext(),MediaStore.ACTION_IMAGE_CAPTURE)){
+            try{
+                Log.e(TAG, "여기있어요");
+                File f = createImageFile();
+                picturePath = f.getAbsolutePath();
+                Log.e(TAG, "여기있어요22");
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+                Log.e(TAG, "여기있어요333");
+
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }*/
+
     }
 
+
     //파일 경로 수정
-    /*
+
+/*
     private File createFile() {
         String filename = createFilename();
         //File outFile = new File(getFilesDir(), filename);
@@ -293,7 +384,7 @@ public class Fragment1 extends AppCompatActivity {
 
         return outFile;
     }
-     */
+*/
 
     private File createFile() {
         String filename = createFilename();
@@ -301,6 +392,16 @@ public class Fragment1 extends AppCompatActivity {
         picturePath = outFile.toString();
         Log.d("Main", "File path : " + outFile.getAbsolutePath());
         return outFile;
+    }
+
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "PNG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_DCIM);
+        File image = File.createTempFile( imageFileName, ".png", storageDir );
+        picturePath = image.getAbsolutePath();
+        return image;
     }
 
     //사진 촬영 끝...
@@ -325,9 +426,67 @@ public class Fragment1 extends AppCompatActivity {
         if (intent != null) {
             switch (requestCode) {
                 case AppConstants.REQ_PHOTO_CAPTURE:  // 사진 찍는 경우
-                    Log.d(TAG, "onActivityResult() for REQ_PHOTO_CAPTURE.");
-                    Log.d(TAG, "resultCode : " + resultCode);
+                    Log.e(TAG, "onActivityResult() for REQ_PHOTO_CAPTURE.");
+                    Log.e(TAG, "resultCode : " + resultCode);       // 확인완료
 
+
+                    /*
+                    ContentResolver resolver = context.getContentResolver();
+
+                    try {
+                        InputStream instream = resolver.openInputStream(fileUri);
+                        resultPhotoBitmap = BitmapFactory.decodeStream(instream);
+                        pictureImageView.setImageBitmap(resultPhotoBitmap);
+
+                        instream.close();
+
+                        isPhotoCaptured = true;
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                    }
+
+                     */
+
+                    /*
+                    Cursor cursor = null;
+
+                    try{
+                        String[] proj = { MediaStore.Images.Media.DATA };
+                        assert fileUri != null;
+                        cursor = getContentResolver().query(fileUri, proj, null, null, null);
+
+                        assert cursor != null;
+                        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                        cursor.moveToFirst();
+                        tempFile = new File(cursor.getString(column_index));
+
+                    }finally {
+                        if (cursor != null) {
+                            cursor.close();
+                        }
+                    }
+
+                    setImage();
+
+                     */
+
+                    /*if (intent != null && resultCode == RESULT_OK ) {
+                        Log.e(TAG, "IM HERERERERERE233333333333");
+
+                        Uri fileUri_1 = getUriFromPath(picturePath);
+
+
+                        Log.d(TAG, "fileUri : " + fileUri_1);
+
+                        File file = new File(picturePath);
+
+                    }
+
+                        tempFile = new File(picturePath);
+
+                        setImage();
+                        Log.e(TAG, "IM HERERERERERE~~~~~~~~~~~~~~~");
+*/
 
                     //setPicture(file.getAbsolutePath(), 8);
                     resultPhotoBitmap = decodeSampledBitmapFromResource(file, pictureImageView.getWidth(), pictureImageView.getHeight());
@@ -414,6 +573,11 @@ public class Fragment1 extends AppCompatActivity {
 
                     if (intent != null && resultCode == RESULT_OK ) {
 
+                        try {
+                            resultPhotoBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), fileUri);
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        }
 
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
                         Cursor cursor = getContentResolver().query(fileUri, filePathColumn, null, null, null);
@@ -440,6 +604,8 @@ public class Fragment1 extends AppCompatActivity {
                     break;
 
             }
+        } else{
+            Log.e(TAG, String.valueOf(intent));
         }
     }
     //onActivitybyresult 끝.
@@ -462,7 +628,7 @@ public class Fragment1 extends AppCompatActivity {
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
-
+        Log.e(TAG,"Im here~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         imageView.setImageBitmap(originalBm);
 
     }
@@ -508,7 +674,7 @@ public class Fragment1 extends AppCompatActivity {
 
     private String createFilename() {
         Date curDate = new Date();
-        String curDateStr = String.valueOf(curDate.getTime()) + ".jpg"; //확장자로 저장
+        String curDateStr = String.valueOf(curDate.getTime()) + ".png"; //확장자로 저장
         return curDateStr;
     }
 

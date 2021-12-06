@@ -21,7 +21,7 @@ import java.io.UnsupportedEncodingException;
 
 
 public class subThread extends Thread {
-    public void sendHttpWithMsg(String url) {
+    public static void sendHttpWithMsg(String url) {
 
         DefaultHttpClient client = new DefaultHttpClient();
         HttpPost post = new HttpPost(url);
